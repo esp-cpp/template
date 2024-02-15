@@ -33,7 +33,7 @@ jobs:
         path: |
           build/bootloader/bootloader.bin
           build/partition_table/partition-table.bin
-          build/bldc_test_stand.bin
+          build/*.bin
           build/flash_args
 
     - name: Attach files to release
@@ -41,7 +41,7 @@ jobs:
       if: ${{ github.event.release && github.event.action == 'published' }}
       with:
         files: |
-          build/bldc_test_stand.bin
+          build/*.bin
           build/bootloader/bootloader.bin
           build/partition_table/partition-table.bin
           build/flash_args
