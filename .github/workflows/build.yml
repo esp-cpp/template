@@ -13,9 +13,8 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Build Examples
+    - name: Build main
       uses: espressif/esp-idf-ci-action@v1
       with:
         esp_idf_version: release-v5.2
-        target: esp32s3
         path: '.'
