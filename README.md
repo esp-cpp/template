@@ -54,3 +54,29 @@ See the Getting Started Guide for full steps to configure and use ESP-IDF to bui
 Example screenshot of the console output from this app:
 
 ![CleanShot 2023-07-12 at 14 01 21](https://github.com/esp-cpp/template/assets/213467/7f8abeae-121b-4679-86d8-7214a76f1b75)
+
+## Developing
+
+If you're developing code for this repository, it's recommended to configure
+your development environment:
+
+### Code style
+
+1. Ensure `clang-format` is installed
+2. Ensure [pre-commit](https://pre-commit.com) is installed
+3. Set up `pre-commit` for this repository:
+
+  ``` console
+  pre-commit install
+  ```
+
+This helps ensure that consistent code formatting is applied, by running
+`clang-format` each time you change the code (via a git pre-commit hook) using
+the [./.clang-format](./.clang-format) code style configuration file.
+
+If you ever want to re-run the code formatting on all files in the repository,
+you can do so:
+
+``` console
+pre-commit run --all-files
+```
