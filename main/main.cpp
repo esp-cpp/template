@@ -19,7 +19,6 @@ extern "C" void app_main(void) {
 
   // make a simple task that prints "Hello World!" every second
   espp::Task task({
-      .name = "Hello World",
       .callback = [&](auto &m, auto &cv) -> bool {
         logger.debug("[{:.3f}] Hello from the task!", elapsed());
         std::unique_lock<std::mutex> lock(m);
@@ -27,7 +26,10 @@ extern "C" void app_main(void) {
         // we don't want to stop the task, so return false
         return false;
       },
-      .stack_size_bytes = 4096,
+        .task_config = {
+          .name = "Hello World",
+          .stack_size_bytes = 4096,
+        }
     });
   task.start();
 

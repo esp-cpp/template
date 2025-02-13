@@ -21,7 +21,7 @@ jobs:
     - name: Build Main Code
       uses: espressif/esp-idf-ci-action@v1
       with:
-        esp_idf_version: release-v5.2
+        esp_idf_version: release-v5.4
         path: '.'
         command: 'idf.py build'
 
