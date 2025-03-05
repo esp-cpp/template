@@ -18,6 +18,8 @@ After setting this as the template, make sure to update the following:
   [main folder](./main) is also where you can put additional header and source
   files that you don't think belong in their own components but help keep the
   main code clean.
+- The [./sdkconfig.defaults](./sdkconfig.defaults) to configure the defaults for
+  your project / processor.
 - Update the [./.github/workflows/build.yml](./.github/workflows/build.yml) file
   to have the correct target architecture (e.g. `esp32s3`) for your project.
 - Enable `Read and Write permissions` under `Workflow Permissions` on the
