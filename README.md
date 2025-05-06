@@ -3,6 +3,18 @@
 Template repository for building an ESP app with ESP++ (espp) components and
 ESP-IDF components.
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [ESP++ Template](#esp-template)
+  - [Development](#development)
+  - [Build and Flash](#build-and-flash)
+  - [Output](#output)
+  - [Developing](#developing)
+    - [Code style](#code-style)
+
+<!-- markdown-toc end -->
+
 ## Development
 
 This repository is designed to be used as a template repository - so you can
@@ -10,10 +22,15 @@ sepcify this as the template repository type when creating a new repository on
 GitHub.
 
 After setting this as the template, make sure to update the following:
-- [This README](./README.md) to contain the relevant description and images of your project
-- The [./CMakeLists.txt](./CMakeLists.txt) file to have the components that you
-  want to use (and any you may have added to the [components
-  folder](./components)) as well as to update the project name
+- [This README](./README.md) to contain the relevant description and images of
+  your project
+- Add additional component dependencies you may want, e.g.:
+
+    ```console
+    idf.py add-dependency "espp/timer^0.21.0"
+    ```
+
+- The [./CMakeLists.txt](./CMakeLists.txt) file to update the project name.
 - The [./main/main.cpp](./main/main.cpp) To run the main code for your app. The
   [main folder](./main) is also where you can put additional header and source
   files that you don't think belong in their own components but help keep the
@@ -26,22 +43,6 @@ After setting this as the template, make sure to update the following:
   `Settings->Actions` subpage of the repository. that will allow the static
   analysis tool to put its results into a comment on any pull requests in your
   repository.
-
-## Cloning
-
-Since this repo contains a submodule, you need to make sure you clone it
-recursively, e.g. with:
-
-``` sh
-git clone --recurse-submodules <your repo name>
-```
-
-Alternatively, you can always ensure the submodules are up to date after cloning
-(or if you forgot to clone recursively) by running:
-
-``` sh
-git submodule update --init --recursive
-```
 
 ## Build and Flash
 

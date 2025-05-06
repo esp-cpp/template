@@ -7,13 +7,32 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 # add the component directories that we want to use
 set(EXTRA_COMPONENT_DIRS
   "components/"
-  "components/espp/components/"
+  # NOTE: if we didn't use the idf-component-manager to get the espp
+  #       dependencies, we could instead have ESPP be a submodule within our
+  #       'components' folder, which would mean we'd need to add it to the DIRS:
+  #
+  # "components/espp/components/"
+  #
+  # NOTE: alternatively, we could install espp system-wide, so we could just
+  #       point it to wherever we have espp installed.
+  #
+  # "/path/to/espp/components/"
 )
 
 set(
   COMPONENTS
-  # TODO: add additional esp-idf and espp components you want to use to the line below:
-  "main esptool_py logger task"
+  # NOTE: you can add additional esp-idf and espp components you want to use to
+  #       the line below.
+  #
+  # Alternatively, If they exist in the component registry, then you can ignore
+  # adding them here, and instead use call
+  #
+  # `idf.py add-dependency "<namespace>/<component>^<version>"`
+  #
+  # e.g.
+  #
+  # `idf.py add-dependency "espp/task^0.21.0"`
+  "main esptool_py"
   CACHE STRING
   "List of components to include"
   )
