@@ -39,6 +39,11 @@ After setting this as the template, make sure to update the following:
   your project / processor.
 - Update the [./.github/workflows/build.yml](./.github/workflows/build.yml) file
   to have the correct target architecture (e.g. `esp32s3`) for your project.
+- Update the [./.github/workflows/package_main.yml](./.github/workflows/package_main.yml) file
+  to:
+  - have the correct target architecture (e.g. `esp32s3`) for your project
+  - include all the build outputs you may want (e.g. littlefs file system images)
+  - have the right name for the generated 1-click programmer executable
 - Enable `Read and Write permissions` under `Workflow Permissions` on the
   `Settings->Actions` subpage of the repository. that will allow the static
   analysis tool to put its results into a comment on any pull requests in your

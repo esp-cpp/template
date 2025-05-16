@@ -19,8 +19,6 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
-      with:
-        submodules: 'recursive'
 
     - name: Build Main Code
       uses: espressif/esp-idf-ci-action@v1
@@ -28,10 +26,15 @@ jobs:
         esp_idf_version: release-v5.4
         path: '.'
         command: 'idf.py build'
+        # TODO: set the target here to be the chip you are building for
+        # target: esp32s3
 
     - name: Upload Build Outputs
       uses: actions/upload-artifact@v4
       id: zip_step
+      # TODO: add / remove files below. You may want to include for example
+      # littlefs-flash_args if you have a littlefs filesystem image you want to
+      # include
       with:
         name: build-artifacts
         path: |
@@ -45,6 +48,9 @@ jobs:
     - name: Attach files to release
       uses: softprops/action-gh-release@v2
       if: ${{ github.event.release && github.event.action == 'published' }}
+      # TODO: add / remove files below. You may want to include for example
+      # littlefs-flash_args if you have a littlefs filesystem image you want to
+      # include
       with:
         files: |
           build/*.bin
@@ -62,7 +68,8 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: esp-cpp/esp-packaged-programmer-action@v1.0.1
+      - uses: esp-cpp/esp-packaged-programmer-action@v1.0.4
         with:
           zipfile-id: ${{ needs.build.outputs.zipfile-id }}
-          programmer-name: 'esp-usb-ble-hid_programmer'
+          # TODO: update programmer name to be what you want to call it
+          programmer-name: 'your_programmer'
