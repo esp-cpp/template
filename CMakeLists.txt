@@ -37,7 +37,7 @@ set(
   #
   # e.g.
   #
-  # `idf.py add-dependency "espp/task^0.21.0"`
+  # `idf.py add-dependency "espp/task>=1.0"`
   "main esptool_py"
   CACHE STRING
   "List of components to include"

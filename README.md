@@ -27,7 +27,7 @@ After setting this as the template, make sure to update the following:
 - Add additional component dependencies you may want, e.g.:
 
     ```console
-    idf.py add-dependency "espp/timer^0.21.0"
+    idf.py add-dependency "espp/timer>=1.0"
     ```
 
 - The [./CMakeLists.txt](./CMakeLists.txt) file to update the project name.
