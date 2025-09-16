@@ -7,15 +7,18 @@ ESP-IDF components.
 **Table of Contents**
 
 - [ESP++ Template](#esp-template)
+  - [Template](#template)
+    - [Use within a Private Repository](#use-within-a-private-repository)
   - [Development](#development)
-  - [Build and Flash](#build-and-flash)
+    - [Environment](#environment)
+    - [Build and Flash](#build-and-flash)
   - [Output](#output)
-  - [Developing](#developing)
+  - [Contributing](#contributing)
     - [Code style](#code-style)
 
 <!-- markdown-toc end -->
 
-## Development
+## Template
 
 This repository is designed to be used as a template repository - so you can
 sepcify this as the template repository type when creating a new repository on
@@ -49,7 +52,32 @@ After setting this as the template, make sure to update the following:
   analysis tool to put its results into a comment on any pull requests in your
   repository.
 
-## Build and Flash
+### Use within a Private Repository
+
+If you are using this template in a private repository, there are a couple of
+additional steps you will need to take:
+
+- Update the
+  [./.github/workflows/static_analysis.yml](./.github/workflows/static_analysis.yml).
+  If you are using this in a private repository, you'll need to update the `on:
+  pull_request_target: ...` section to instead just be `on: [pull_request]`, otherwise
+  the action won't be able to properly run.
+
+## Development
+
+If you wish to modify / recompile the code, you will need to set up your
+development environment to be able to build and flash your target hardware.
+
+### Environment
+
+This project is an ESP-IDF project, currently [ESP-IDF
+v.5.5](https://github.com/espressif/esp-idf).
+
+For information about setting up `ESP-IDF v5.5`, please see [the official
+ESP-IDF getting started
+documentation](https://docs.espressif.com/projects/esp-idf/en/v5.5/esp32s3/get-started/index.html).
+
+### Build and Flash
 
 Build the project and flash it to the board, then run monitor tool to view serial output:
 
@@ -69,10 +97,10 @@ Example screenshot of the console output from this app:
 
 ![CleanShot 2023-07-12 at 14 01 21](https://github.com/esp-cpp/template/assets/213467/7f8abeae-121b-4679-86d8-7214a76f1b75)
 
-## Developing
+## Contributing
 
-If you're developing code for this repository, it's recommended to configure
-your development environment:
+If you're developing code to contribute to this repository, it's recommended to
+configure your development environment:
 
 ### Code style
 
