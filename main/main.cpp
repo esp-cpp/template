@@ -7,20 +7,17 @@
 using namespace std::chrono_literals;
 
 extern "C" void app_main(void) {
-  static auto start = std::chrono::high_resolution_clock::now();
-  static auto elapsed = [&]() {
-    auto now = std::chrono::high_resolution_clock::now();
-    return std::chrono::duration<float>(now - start).count();
-  };
-
   espp::Logger logger({.tag = "Template", .level = espp::Logger::Verbosity::DEBUG});
 
   logger.info("Bootup");
 
+  // counter to show the number of prints, shared between main and task
+  std::atomic<int> counter = 0;
+
   // make a simple task that prints "Hello World!" every second
   espp::Task task({
       .callback = [&](auto &m, auto &cv) -> bool {
-        logger.debug("[{:.3f}] Hello from the task!", elapsed());
+        logger.debug("[{}] Hello from the task!", counter++);
         std::unique_lock<std::mutex> lock(m);
         cv.wait_for(lock, 1s);
         // we don't want to stop the task, so return false
@@ -35,7 +32,7 @@ extern "C" void app_main(void) {
 
   // also print in the main thread
   while (true) {
-    logger.debug("[{:.3f}] Hello World!", elapsed());
+    logger.debug("[{}] Hello World!", counter++);
     std::this_thread::sleep_for(1s);
   }
 }

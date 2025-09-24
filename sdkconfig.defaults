@@ -18,6 +18,3 @@
 #
 # CONFIG_ESP_SYSTEM_EVENT_TASK_STACK_SIZE=4096
 # CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
-
-# TODO: uncomment if you want to enable exceptions (which may be needed by certain components such as cli)
-# CONFIG_COMPILER_CXX_EXCEPTIONS=y
