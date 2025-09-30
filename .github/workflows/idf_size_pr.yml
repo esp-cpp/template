@@ -1,8 +1,8 @@
-name: esp-idf size delta (PR)
+name: 'esp-idf size delta (PR)'
 
 on:
   pull_request:
-    targets:
+    branches:
       - main
 
 env:
@@ -26,3 +26,4 @@ jobs:
           idf_version: ${{ env.IDF_VERSION }}
           idf_component_manager: ${{ env.IDF_COMPONENT_MANAGER }}
           base_ref: ${{ github.event.pull_request.base.sha }}
+          flash_total_override: ${{ env.FLASH_TOTAL_OVERRIDE }}
