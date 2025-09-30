@@ -1,0 +1,28 @@
+name: esp-idf size delta (PR)
+
+on:
+  pull_request:
+    targets:
+      - main
+
+env:
+  # TODO: Update the below variables for your project
+  APP_NAME: "Template"
+  APP_PATH: .
+  IDF_VERSION: v5.5
+  IDF_COMPONENT_MANAGER: "0"
+  FLASH_TOTAL_OVERRIDE: 1500000
+
+jobs:
+  size-diff:
+    name: Size diff (${{ env.APP_PATH }})
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run reusable action
+        uses: esp-cpp/esp-idf-size-delta@main
+        with:
+          app_name: ${{ env.APP_NAME }}
+          app_path: ${{ env.APP_PATH }}
+          idf_version: ${{ env.IDF_VERSION }}
+          idf_component_manager: ${{ env.IDF_COMPONENT_MANAGER }}
+          base_ref: ${{ github.event.pull_request.base.sha }}

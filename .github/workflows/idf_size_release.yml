@@ -1,0 +1,57 @@
+name: esp-idf release size delta (Release)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      compare_tag:
+        description: 'Tag to compare against (leave empty to auto-select previous)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+env:
+  # TODO: Update the below variables for your project
+  APP_NAME: "Template"
+  APP_PATH: .
+  IDF_VERSION: v5.5
+  IDF_COMPONENT_MANAGER: "0"
+  FLASH_TOTAL_OVERRIDE: 1500000
+
+jobs:
+  size-diff-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine base ref
+        id: base
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMPARE_TAG_INPUT="${{ github.event.inputs.compare_tag || '' }}"
+          if [ -n "$COMPARE_TAG_INPUT" ]; then
+            echo "ref=$COMPARE_TAG_INPUT" >> "$GITHUB_OUTPUT"
+          else
+            # use the previous tag chronologically
+            prev=$(git tag --sort=-creatordate | sed -n '2p')
+            if [ -z "$prev" ]; then prev=$(git tag --sort=-v:refname | sed -n '2p'); fi
+            echo "ref=$prev" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run reusable action
+        id: size
+        uses: ./.github/actions/esp-idf-size-delta
+        with:
+          app_name: ${{ env.APP_NAME }}
+          app_path: ${{ env.APP_PATH }}
+          idf_version: ${{ env.IDF_VERSION }}
+          idf_component_manager: ${{ env.IDF_COMPONENT_MANAGER }}
+          flash_total_override: ${{ env.FLASH_TOTAL_OVERRIDE }}
+          base_ref: ${{ steps.base.outputs.ref }}
+          post_comment: 'false'
