@@ -15,7 +15,7 @@ env:
 
 jobs:
   size-diff:
-    name: Size diff (${{ env.APP_PATH }})
+    name: Size diff
     runs-on: ubuntu-latest
     steps:
       - name: Run reusable action
