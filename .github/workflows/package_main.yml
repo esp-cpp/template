@@ -71,29 +71,15 @@ jobs:
           build/flasher_args.json
           build/flash_args
 
-    - name: Determine base ref
-      if: ${{ github.event.release && github.event.action == 'published' }}
-      id: base
-      shell: bash
-      run: |
-        set -euo pipefail
-        # use the previous tag chronologically
-        prev=$(git tag --sort=-creatordate | sed -n '2p')
-        if [ -z "$prev" ]; then prev=$(git tag --sort=-v:refname | sed -n '2p'); fi
-        echo "ref=$prev" >> "$GITHUB_OUTPUT"
-
     - name: Determine Size Delta
       if: ${{ github.event.release && github.event.action == 'published' }}
       uses: esp-cpp/esp-idf-size-delta@v1
       with:
         app_name: ${{ env.APP_NAME }}
         app_path: "."
-        head_name: "${{ github.event.release.tag_name }}"
-        base_name: "${{ steps.base.outputs.ref }}"
         idf_target: ${{ env.IDF_TARGET }}
         idf_version: ${{ env.IDF_VERSION }}
         idf_component_manager: ${{ env.IDF_COMPONENT_MANAGER }}
-        base_ref: ${{ steps.base.outputs.ref }}
         flash_total_override: ${{ env.FLASH_TOTAL_OVERRIDE }}
         post_comment: 'false'
 
