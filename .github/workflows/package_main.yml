@@ -7,11 +7,22 @@ on:
     types: [published]
   workflow_dispatch:
 
+env:
+  # TODO: Update the below variables for your project
+  APP_NAME: "Template"
+  IDF_TARGET: 'esp32'
+  IDF_VERSION: 'v5.5'
+  IDF_COMPONENT_MANAGER: "1" # whether to enable the component manager or not
+  FLASH_TOTAL_OVERRIDE: '1500000' # number of bytes of total flash (for percentage calculations)
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
     continue-on-error: false
+
+    permissions:
+      contents: write
 
     outputs:
       zipfile-id: ${{ steps.zip_step.outputs.artifact-id }}
@@ -25,11 +36,9 @@ jobs:
     - name: Build Main Code
       uses: espressif/esp-idf-ci-action@v1
       with:
-        esp_idf_version: release-v5.5
+        esp_idf_version: ${{ env.IDF_VERSION }}
         path: '.'
-        command: 'idf.py build'
-        # TODO: set the target here to be the chip you are building for
-        # target: esp32s3
+        target: ${{ env.IDF_TARGET }}
 
     - name: Upload Build Outputs
       uses: actions/upload-artifact@v4
