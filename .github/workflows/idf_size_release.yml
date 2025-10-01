@@ -1,14 +1,9 @@
-name: 'esp-idf release size delta (Release)'
+name: 'ESP-IDF Size Delta (Release)'
 
 on:
   release:
     types: [published]
   workflow_dispatch:
-    inputs:
-      compare_tag:
-        description: 'Tag to compare against (leave empty to auto-select previous)'
-        required: false
-        default: ''
 
 permissions:
   contents: write
