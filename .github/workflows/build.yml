@@ -16,9 +16,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    permissions:
-      issues: write
-
     steps:
     - name: Checkout repo
       uses: actions/checkout@v5
@@ -39,5 +36,4 @@ jobs:
         idf_target: ${{ env.IDF_TARGET }}
         idf_version: ${{ env.IDF_VERSION }}
         idf_component_manager: ${{ env.IDF_COMPONENT_MANAGER }}
-        base_ref: ${{ github.event.pull_request.base.sha }}
         flash_total_override: ${{ env.FLASH_TOTAL_OVERRIDE }}
