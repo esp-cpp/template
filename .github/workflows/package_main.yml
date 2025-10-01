@@ -29,7 +29,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
 
@@ -89,7 +89,7 @@ jobs:
 
     - name: Determine Size Delta
       if: ${{ github.event.release && github.event.action == 'published' }}
-      uses: esp-cpp/esp-idf-size-delta@main
+      uses: esp-cpp/esp-idf-size-delta@v1
       with:
         app_name: ${{ env.APP_NAME }}
         app_path: "."
