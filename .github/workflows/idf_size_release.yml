@@ -10,42 +10,45 @@ env:
   APP_NAME: "Template"
   IDF_TARGET: 'esp32'
   IDF_VERSION: 'v5.5'
-  IDF_COMPONENT_MANAGER: "1"
-  FLASH_TOTAL_OVERRIDE: '1500000'
+  IDF_COMPONENT_MANAGER: "1" # whether to enable the component manager or not
+  FLASH_TOTAL_OVERRIDE: '1500000' # number of bytes of total flash (for percentage calculations)
 
 jobs:
-  size-diff-release:
+  build:
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    # Checkout repo to get tags
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Determine base ref
-        id: base
-        shell: bash
-        run: |
-          set -euo pipefail
-          COMPARE_TAG_INPUT="${{ github.event.inputs.compare_tag || '' }}"
-          if [ -n "$COMPARE_TAG_INPUT" ]; then
-            echo "ref=$COMPARE_TAG_INPUT" >> "$GITHUB_OUTPUT"
-          else
-            # use the previous tag chronologically
-            prev=$(git tag --sort=-creatordate | sed -n '2p')
-            if [ -z "$prev" ]; then prev=$(git tag --sort=-v:refname | sed -n '2p'); fi
-            echo "ref=$prev" >> "$GITHUB_OUTPUT"
-          fi
+    - name: Determine base ref
+      id: base
+      shell: bash
+      run: |
+        set -euo pipefail
+        COMPARE_TAG_INPUT="${{ github.event.inputs.compare_tag || '' }}"
+        if [ -n "$COMPARE_TAG_INPUT" ]; then
+          echo "ref=$COMPARE_TAG_INPUT" >> "$GITHUB_OUTPUT"
+        else
+          # use the previous tag chronologically
+          prev=$(git tag --sort=-creatordate | sed -n '2p')
+          if [ -z "$prev" ]; then prev=$(git tag --sort=-v:refname | sed -n '2p'); fi
+          echo "ref=$prev" >> "$GITHUB_OUTPUT"
+        fi
 
-      - name: Determine Size Delta
-        uses: esp-cpp/esp-idf-size-delta@main
-        with:
-          app_name: ${{ env.APP_NAME }}
-          app_path: "."
-          idf_target: ${{ env.IDF_TARGET }}
-          idf_version: ${{ env.IDF_VERSION }}
-          idf_component_manager: ${{ env.IDF_COMPONENT_MANAGER }}
-          flash_total_override: ${{ env.FLASH_TOTAL_OVERRIDE }}
-          base_ref: ${{ steps.base.outputs.ref }}
-          post_comment: 'false'
+    - name: Determine Size Delta
+      uses: esp-cpp/esp-idf-size-delta@main
+      with:
+        app_name: ${{ env.APP_NAME }}
+        app_path: "."
+        idf_target: ${{ env.IDF_TARGET }}
+        idf_version: ${{ env.IDF_VERSION }}
+        idf_component_manager: ${{ env.IDF_COMPONENT_MANAGER }}
+        base_ref: ${{ steps.base.outputs.ref }}
+        flash_total_override: ${{ env.FLASH_TOTAL_OVERRIDE }}
+        post_comment: 'false'
