@@ -81,7 +81,6 @@ jobs:
         idf_version: ${{ env.IDF_VERSION }}
         idf_component_manager: ${{ env.IDF_COMPONENT_MANAGER }}
         flash_total_override: ${{ env.FLASH_TOTAL_OVERRIDE }}
-        post_comment: 'false'
 
   package:
     name: Package the binaries into an executables for Windows, MacOS, and Linux (Ubuntu)
