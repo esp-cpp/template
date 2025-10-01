@@ -41,7 +41,7 @@ After setting this as the template, make sure to update the following:
 - The [./sdkconfig.defaults](./sdkconfig.defaults) to configure the defaults for
   your project / processor.
 - Update the [./.github/workflows/build.yml](./.github/workflows/build.yml) file
-  to have the correct target architecture (e.g. `esp32s3`) for your project.
+  to have the correct information for your project.
 - Update the [./.github/workflows/package_main.yml](./.github/workflows/package_main.yml) file
   to:
   - have the correct target architecture (e.g. `esp32s3`) for your project
