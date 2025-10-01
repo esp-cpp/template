@@ -16,9 +16,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    permissions:
-      issues: write
-
     steps:
     - name: Checkout repo
       uses: actions/checkout@v5
