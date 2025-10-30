@@ -7,7 +7,7 @@ env:
   # TODO: Update the below variables for your project
   APP_NAME: "Template"
   IDF_TARGET: 'esp32'
-  IDF_VERSION: 'v5.5'
+  IDF_VERSION: 'v5.5.1'
   IDF_COMPONENT_MANAGER: "1" # whether to enable the component manager or not
   FLASH_TOTAL_OVERRIDE: '1500000' # number of bytes of total flash (for percentage calculations)
 
