@@ -75,7 +75,7 @@ v.5.5.1 or v6.0.0](https://github.com/espressif/esp-idf).
 
 For information about setting up `ESP-IDF`, please see [the official
 ESP-IDF getting started
-documentation](https://docs.espressif.com/projects/esp-idf/en/v5.5.1/esp32s3/get-started/index.html).
+documentation](https://docs.espressif.com/projects/esp-idf/en/release-v6.0/esp32s3/get-started/index.html).
 
 ### Build and Flash
 
