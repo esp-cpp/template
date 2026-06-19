@@ -8,7 +8,10 @@ ESP-IDF components.
 
 - [ESP++ Template](#esp-template)
   - [Template](#template)
+    - [Automated Setup (Windows Only)](#automated-setup-windows-only)
+    - [Manual Setup (Windows / Linux / macOS)](#manual-setup-windows--linux--macos)
     - [Use within a Private Repository](#use-within-a-private-repository)
+    - [Additional Dependencies](#additional-dependencies)
   - [Development](#development)
     - [Environment](#environment)
     - [Build and Flash](#build-and-flash)
@@ -24,14 +27,28 @@ This repository is designed to be used as a template repository - so you can
 specify this as the template repository type when creating a new repository on
 GitHub.
 
+### Automated Setup (Windows Only)
+
+After setting this as the template:
+
+- Open a PowerShell terminal in the project root and run:
+  - ```console
+    python scripts/setup_project_windows.py
+    ```
+
+  - The script will prompt you for the project name, target chip, GitHub workflow permissions, automatically update the corresponding files and setup pre-commit.
+
+- Close the terminal and open an **ESP-IDF Terminal** to build, flash and test.
+  - The serial monitor should print `Hello World!`
+
+> **Note:** If you need non-default build outputs (e.g., littlefs images), update [./.github/workflows/package_main.yml](./.github/workflows/package_main.yml) manually.
+
+
+### Manual Setup (Windows / Linux / macOS)
+
 After setting this as the template, make sure to update the following:
 - [This README](./README.md) to contain the relevant description and images of
   your project
-- Add additional component dependencies you may want, e.g.:
-
-    ```console
-    idf.py add-dependency "espp/timer>=1.0"
-    ```
 
 - The [./CMakeLists.txt](./CMakeLists.txt) file to update the project name.
 - The [./main/main.cpp](./main/main.cpp) To run the main code for your app. The
@@ -62,6 +79,14 @@ additional steps you will need to take:
   If you are using this in a private repository, you'll need to update the `on:
   pull_request_target: ...` section to instead just be `on: [pull_request]`, otherwise
   the action won't be able to properly run.
+
+### Additional Dependencies
+
+- Add additional component dependencies you may want, e.g.:
+
+  ```console
+  idf.py add-dependency "espp/timer>=1.0"
+  ```
 
 ## Development
 
