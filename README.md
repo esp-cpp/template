@@ -8,8 +8,8 @@ ESP-IDF components.
 
 - [ESP++ Template](#esp-template)
   - [Template](#template)
-    - [Automated Setup (Windows Only)](#automated-setup-windows-only)
-    - [Manual Setup (Windows / Linux / macOS)](#manual-setup-windows--linux--macos)
+    - [Automated Setup](#automated-setup)
+    - [Manual Setup](#manual-setup)
     - [Use within a Private Repository](#use-within-a-private-repository)
     - [Additional Dependencies](#additional-dependencies)
   - [Development](#development)
@@ -27,24 +27,24 @@ This repository is designed to be used as a template repository - so you can
 specify this as the template repository type when creating a new repository on
 GitHub.
 
-### Automated Setup (Windows Only)
+### Automated Setup
 
 After setting this as the template:
 
-- Open a PowerShell terminal in the project root and run:
+- Open a terminal in the project root and run:
   - ```console
-    python scripts/setup_project_windows.py
+    python scripts/setup_project.py
     ```
 
-  - The script will prompt you for the project name, target chip, GitHub workflow permissions, automatically update the corresponding files and setup pre-commit.
+  - The script will prompt you for the project name, target chip, ESP-IDF version, GitHub workflow permissions, automatically update the corresponding files (including the logger tag in `main/main.cpp` and this README) and setup pre-commit.
 
-- Close the terminal and open an **ESP-IDF Terminal** to build, flash and test.
+- Open an **ESP-IDF Terminal** to build, flash and test.
   - The serial monitor should print `Hello World!`
 
 > **Note:** If you need non-default build outputs (e.g., littlefs images), update [./.github/workflows/package_main.yml](./.github/workflows/package_main.yml) manually.
 
 
-### Manual Setup (Windows / Linux / macOS)
+### Manual Setup
 
 After setting this as the template, make sure to update the following:
 - [This README](./README.md) to contain the relevant description and images of

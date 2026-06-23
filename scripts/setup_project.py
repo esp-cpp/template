@@ -35,6 +35,46 @@ def ask(prompt, default=None):
     return value if value else default
 
 
+def _github_anchor(text):
+    """Approximate GitHub's heading-to-anchor slug (lowercase, spaces → hyphens)."""
+    anchor = re.sub(r'[^\w\s-]', '', text.strip().lower())
+    return re.sub(r'\s+', '-', anchor)
+
+
+def update_readme(app_name):
+    """Retitle the README and strip the template setup instructions. Returns a change description or None."""
+    path = SCRIPT_DIR / 'README.md'
+    if not path.exists():
+        return None
+    content = original = path.read_text(encoding='utf-8')
+
+    # Retitle the project (H1 heading + the matching table-of-contents entry)
+    content = content.replace('# ESP++ Template\n', f'# {app_name}\n', 1)
+    content = content.replace(
+        '- [ESP++ Template](#esp-template)',
+        f'- [{app_name}](#{_github_anchor(app_name)})',
+        1,
+    )
+
+    # Drop the Automated/Manual Setup entries from the table of contents
+    content = re.sub(r'[ \t]*- \[Automated Setup\]\(#automated-setup\)\n', '', content)
+    content = re.sub(r'[ \t]*- \[Manual Setup\]\(#manual-setup\)\n', '', content)
+
+    # Remove the Automated Setup and Manual Setup sections — they only apply
+    # before the template has been instantiated.
+    content = re.sub(
+        r'### Automated Setup\n.*?(?=### Use within a Private Repository)',
+        '',
+        content,
+        flags=re.DOTALL,
+    )
+
+    if content == original:
+        return None
+    path.write_text(content, encoding='utf-8')
+    return 'README.md             retitled, template setup instructions removed'
+
+
 def find_idf_path():
     """Return the ESP-IDF installation path, or None if undetectable."""
     # 1. IDF_PATH env var (set when IDF environment is activated)
@@ -324,6 +364,8 @@ def main():
     parser.add_argument('--name', help='Project name (lowercase, underscores)')
     parser.add_argument('--app-name', dest='app_name', help='Display name for CI')
     parser.add_argument('--target', choices=VALID_TARGETS, help='IDF target chip')
+    parser.add_argument('--idf-version', dest='idf_version',
+                        help='ESP-IDF version to target, e.g. v5.5.1 (defaults to the detected install)')
     parser.add_argument('--flash-size', dest='flash_size', help='Flash size, bytes or shorthand (e.g. 8M)')
     parser.add_argument('--private', action='store_true', default=None,
                         help='Private repo: updates static_analysis.yml trigger')
@@ -363,24 +405,31 @@ def main():
 
     programmer_name = f'{name}_programmer'
 
+    def _yml_idf_version(p):
+        if p.exists():
+            m = re.search(r"IDF_VERSION: '(v[\d.]+)'", p.read_text(encoding='utf-8'))
+            return m.group(1) if m else None
+        return None
+
     detected_idf = detect_idf_version()
-    idf_already_current = False
-    if detected_idf:
-        def _yml_idf_version(p):
-            if p.exists():
-                m = re.search(r"IDF_VERSION: '(v[\d.]+)'", p.read_text(encoding='utf-8'))
-                return m.group(1) if m else None
-            return None
-        build_ver = _yml_idf_version(SCRIPT_DIR / '.github/workflows/build.yml')
-        pkg_ver = _yml_idf_version(SCRIPT_DIR / '.github/workflows/package_main.yml')
-        if build_ver == detected_idf and pkg_ver == detected_idf:
-            idf_version = None
-            idf_already_current = True
-        else:
-            confirm = ask(f'Update IDF_VERSION on github workflow files to {detected_idf}? (y/n)', default='y')
-            idf_version = detected_idf if confirm.lower().startswith('y') else None
+    build_ver = _yml_idf_version(SCRIPT_DIR / '.github/workflows/build.yml')
+    pkg_ver = _yml_idf_version(SCRIPT_DIR / '.github/workflows/package_main.yml')
+
+    # Ask which ESP-IDF version to target. Default to the detected install,
+    # falling back to whatever the workflow files already specify.
+    default_idf = detected_idf or (build_ver if build_ver == pkg_ver else None)
+    if args.idf_version:
+        chosen_idf = args.idf_version
     else:
-        idf_version = None
+        prompt = 'ESP-IDF version to use (e.g. v5.5.1)'
+        if detected_idf:
+            prompt += f' — detected {detected_idf}'
+        chosen_idf = ask(prompt, default=default_idf)
+    if chosen_idf and not chosen_idf.startswith('v'):
+        chosen_idf = 'v' + chosen_idf
+
+    idf_already_current = bool(chosen_idf) and build_ver == chosen_idf and pkg_ver == chosen_idf
+    idf_version = chosen_idf if (chosen_idf and not idf_already_current) else None
 
     # GitHub — gather remote + permission intent before doing any long-running work
     remote = get_github_remote()
@@ -443,14 +492,21 @@ def main():
     print()
     changes = []
 
-    if not detected_idf:
-        print(f'{YELLOW}Could not detect IDF version — IDF_VERSION will not be changed.{RESET}')
+    if not chosen_idf:
+        print(f'{YELLOW}No ESP-IDF version specified — IDF_VERSION will not be changed.{RESET}')
 
     path = SCRIPT_DIR / 'CMakeLists.txt'
     content = path.read_text(encoding='utf-8')
     if 'project(template)' in content:
         path.write_text(content.replace('project(template)', f'project({name})'), encoding='utf-8')
         changes.append(f'CMakeLists.txt        project(template) → project({name})')
+
+    path = SCRIPT_DIR / 'main' / 'main.cpp'
+    if path.exists():
+        content = path.read_text(encoding='utf-8')
+        if '.tag = "Template"' in content:
+            path.write_text(content.replace('.tag = "Template"', f'.tag = "{app_name}"'), encoding='utf-8')
+            changes.append(f'main/main.cpp         logger tag "Template" → "{app_name}"')
 
     path = SCRIPT_DIR / '.github/workflows/build.yml'
     content = path.read_text(encoding='utf-8')
@@ -534,6 +590,10 @@ def main():
             path.write_text(new_content, encoding='utf-8')
             changes.append(f'sdkconfig.defaults    CONFIG_IDF_TARGET="{target}" uncommented')
 
+    readme_change = update_readme(app_name)
+    if readme_change:
+        changes.append(readme_change)
+
     def _force_remove(func, path, _):
         os.chmod(path, stat.S_IWRITE)
         func(path)
@@ -544,8 +604,8 @@ def main():
         for c in changes:
             print(f'  {GREEN}✓{RESET} {c}')
         if idf_already_current:
-            print(f'  {GREEN}✓{RESET} build.yml             IDF_VERSION already {detected_idf}')
-            print(f'  {GREEN}✓{RESET} package_main.yml      IDF_VERSION already {detected_idf}')
+            print(f'  {GREEN}✓{RESET} build.yml             IDF_VERSION already {chosen_idf}')
+            print(f'  {GREEN}✓{RESET} package_main.yml      IDF_VERSION already {chosen_idf}')
     else:
         print(f'{YELLOW}Nothing to change — already renamed?{RESET}')
 
