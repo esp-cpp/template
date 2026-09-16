@@ -1,0 +1,20 @@
+name: General issue report
+description: File an issue report
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Answers checklist.
+      description: Before submitting a new issue, please follow the checklist and try to find the answer.
+      options:
+        - label: I have read the documentation and the issue is not addressed there.
+        - label: I have searched the issue tracker for a similar issue and not found a similar issue.
+          required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: General issue report
+      description: Your issue report goes here.
+      placeholder: ex. How do I run...
+    validations:
+      required: true
